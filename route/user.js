@@ -12,7 +12,7 @@ router.get('/login',(req,res,next)=>{
     res.status(200).render('login.hbs',{title:"Login"});
 });
 
-router.get('/',(req,res,next)=>{
+router.use('/',(req,res,next)=>{
     res.status(200).render('login.hbs',{title:"Login"});
 });
 
