@@ -17,7 +17,7 @@ router.get('/',(req,res,next)=>{
 });
 
 router.use('/',(req,res,next)=>{
-    res.status(200).send("PAGE NOT FOUND");
+    res.status(200).send("404 PAGE NOT FOUND");
 })
 
 router.post('/login',async (req,res,next)=>{
