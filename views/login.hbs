@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="form-container" style="height:425px">
+        <h1>Rail Connect</h1>
+        <form method="POST" action="/login">
+            <div class="input-container ic1">
+            <input type="email" name="email" class="input" required placeholder=" ">
+            <div class="cut cut-short"></div>
+            <label for="email" class="placeholder">Email</label>
+            </div>
+            <div class="input-container ic2">
+            <input type="password" name="pass" required class="input" min=8 placeholder=" ">
+            <div class="cut"></div>
+            <label for="pass" class="placeholder">Password</label>
+            </div>
+            <div class="input-container ic2">
+            <input type="submit" class="submit" value="Login">
+            </div>
+        </form>
+        <div class="atag">
+        <a href="/forgot_password">Forgot Password?</a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<a href="/register">New user</a>
+        </div>
+        {{#if error}}
+        <h2 style="color:white">{{error}}</h2>
+        {{/if}}
+    </div>
+</body>
+</html>

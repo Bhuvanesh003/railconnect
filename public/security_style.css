@@ -1,0 +1,70 @@
+body{
+    text-align: center;
+    color: white;
+    background-color: rgb(0, 0, 0);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background-image: url('https://i.ibb.co/yYZG5tk/bg-rail.jpg');
+}
+.input{
+    width:15%;
+    height:40%;
+    font-size: 30px;
+    color: #001dff;
+    text-align: center;
+    border-radius: 10px;
+
+}
+.form-container
+{
+    margin: 100px 0 0 0;    
+    background-color: #15172b;
+    border-radius: 20px;
+    box-sizing: border-box;
+    height: 250px;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    align-items: center;
+    width: 550px;
+}
+form button{
+  cursor: pointer;
+  pointer-events: none;
+}
+form button.active {
+  pointer-events: auto;
+}
+.input-contanier
+{
+    margin: 10px 10px 10px 125px;
+    display: relative;
+    justify-content: center;
+    width: 250px;
+    height: 100px;  
+}
+.submit {
+    background-color: #08d;
+    border-radius: 12px;
+    border: 0;
+    box-sizing: border-box;
+    color: #eee;
+    cursor: pointer;
+    font-size: 18px;
+    height: 50px;
+    margin-top: 8px;
+    text-align: center;
+    width: 150px;
+    cursor: pointer;
+  }
+  .submit:hover{
+    background-color: rgb(0, 81, 147);
+  }
+  .submit:active {
+    background-color: #06b;
+  }
+  #error
+  {
+    margin-top: 25px;
+  }
