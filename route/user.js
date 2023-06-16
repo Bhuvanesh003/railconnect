@@ -12,9 +12,13 @@ router.get('/login',(req,res,next)=>{
     res.status(200).render('login.hbs',{title:"Login"});
 });
 
-router.use('/',(req,res,next)=>{
+router.get('/',(req,res,next)=>{
     res.status(200).render('login.hbs',{title:"Login"});
 });
+
+router.use('/',(req,res,next)=>{
+    res.status(200).send("PAGE NOT FOUND");
+})
 
 router.post('/login',async (req,res,next)=>{
     console.log(req.body);
