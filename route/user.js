@@ -6,10 +6,19 @@ const db=require('../db.js');
 const bp=require('body-parser');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 app.use(bp.urlencoded());
 
 router.get('/login',(req,res,next)=>{
-    res.status(200).render('login.hbs',{title:"Login"});
+
+    if(req.session.email)
+    {
+        res.status(200).redirect('/home')
+    }
+    else
+    {
+        res.status(200).render('login.hbs',{title:"Login"});
+    }
 });
 
 router.get('/',(req,res,next)=>{
@@ -33,7 +42,9 @@ router.post('/login',async (req,res,next)=>{
             if(result==true)
             {
                 // req.session.user=st[0].name;
-                res.status(200).render('home.hbs',{title:"Home",name:st[0].name});
+                req.session.name=st[0].name;
+                req.session.email=st[0].email;
+                res.status(200).redirect('/home');
             }
             else
             {
@@ -45,19 +56,93 @@ router.post('/login',async (req,res,next)=>{
 
 router.get('/home',(req,res,next)=>{
     // console.log("Home"+req.body.fname);
-    res.status(200).render('home.hbs',{title:"Home",name:"admin"});
+    if(req.session.email)
+    {
+        res.status(200).render('home.hbs',{title:"Home",name:req.session.name});
+    }
+    else
+    {
+        res.status(200).redirect('/login');
+    }
 })
 
-router.post('/home',(req,res,next)=>{
-    res.status(200).render('home.hbs',{title:"Home",name:"Admin"});
+router.get('/logout',(req,res,next)=>{
+
+    if(req.session.email)
+    {
+        req.session.destroy();
+        res.status(200).redirect('/login');
+    }
+    else
+    {
+        res.status(200).redirect('/login');
+    }
 });
 
-router.get('/security',(req,res,)=>{
-    res.status(200).render('security.hbs',{title:"Security"});
+router.post('/security',async (req,res,next)=>{
+
+        var otp= req.session.otp;
+        await console.log("OTP:"+ otp+"otp4: "+req.body.otp4+"PASS: "+req.session.pass);
+        if(req.body.otp4!=otp%10)
+        {
+          res.status(500).render('security.hbs',{title:"Rail connect",error:"OTP is invalid"});
+          return;
+        }
+        otp=Math.floor(otp/10);
+        if(req.body.otp3!=otp%10)
+        {
+          res.status(500).render('security.hbs',{title:"Rail connect",error:"OTP is invalid"});
+          return;
+        }
+        otp=Math.floor(otp/10);
+        if(req.body.otp2!=otp%10)
+        {
+          res.status(500).render('security.hbs',{title:"Rail connect",error:"OTP is invalid"});
+          return;
+        }
+        otp=Math.floor(otp/10);
+        if(req.body.otp1!=otp%10)
+        {
+          res.status(500).render('security.hbs',{title:"Rail connect",error:"OTP is invalid"});
+          return;
+        }
+        // DB STORE the USER 
+        let dbs=await db.getdatabase();
+        let col=dbs.collection('users');
+        const saltRounds = 10;
+        const myPlaintextPassword = req.session.pass;
+        var name=req.session.name;
+        var email=req.session.email;
+        bcrypt.hash(myPlaintextPassword, saltRounds,async function(err, hash) {
+            console.log("HASH"+hash);
+            let data={name:req.session.name,email:req.session.email,password:hash};
+            const st=await col.insertOne(data);
+            if(st.acknowledged==true)
+            {
+                console.log("NAME:"+name);
+                req.session.name = name;
+                req.session.email = email;
+                req.session.pass="";
+                req.session.otp="";
+                res.status(200).redirect('/home');
+            }
+            else
+            {
+                req.session.destroy();
+                res.status(500).redirect('/login');
+            }
+        });
 })
 
 router.get('/register',(req,res,next)=>{
-    res.status(200).render('register.hbs',{title:"Signup"});
+    if(req.session.email)
+    {
+        res.status(200).redirect('/home')
+    }
+    else
+    {
+        res.status(200).render('register.hbs',{title:"Signup"});
+    }
 });
 
 router.post('/register',async (req,res,next)=>{
@@ -74,7 +159,10 @@ router.post('/register',async (req,res,next)=>{
     }
     else
     {
-
+        req.session.email=emailid;
+        req.session.name=req.body.fname;
+        req.session.pass=req.body.pass;
+        console.log(req.session);
         var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -86,7 +174,7 @@ router.post('/register',async (req,res,next)=>{
     refreshToken: '1//04BwOjxeDBFQNCgYIARAAGAQSNwF-L9Irba0YcVxs7Vnd386CfrwRjl2nIoCHSSvC-fINfbV93RvziZqNA1oqiBgQop65P6N1Nr8'
   }
 });
-        var otp=Math.floor(Math.random() * 10000);
+        const otp = Math.floor(Math.random() * (9999-1000) + 1000);
         console.log(otp);
         var mailOptions = {
             from: 'bhuvanesh.shiga@gmail.com',
@@ -102,9 +190,9 @@ router.post('/register',async (req,res,next)=>{
               console.log('Email sent: ' + info.response);
             }
           });
-
-
-        res.status(200).render('security.hbs',{title:"Security",otp:otp});
+          
+        req.session.otp=otp;
+        res.status(200).render('security.hbs',{title:"Security"});
 
         // HASH A PASSWORD
 
@@ -112,18 +200,18 @@ router.post('/register',async (req,res,next)=>{
         // const saltRounds = 10;
         // const myPlaintextPassword = req.body.pass;
         // bcrypt.hash(myPlaintextPassword, saltRounds,async function(err, hash) {
-            
-        //     let data={name:req.body.fname,email:emailid,password:hash};
-        //     const st=await col.insertOne(data);
-        //     if(st.acknowledged==true)
-        //     {
-        //         res.status(200).render('home.hbs',{title:"Home",name:req.body.fname});
-        //     }
-        //     else
-        //     {
-        //         res.status(500).send('Error Occured');
-        //     }
-        //     });
+
+            // let data={name:req.body.fname,email:emailid,password:hash};
+            // const st=await col.insertOne(data);
+            // if(st.acknowledged==true)
+            // {
+            //     res.status(200).render('home.hbs',{title:"Home",name:req.body.fname});
+            // }
+            // else
+            // {
+            //     res.status(500).send('Error Occured');
+            // }
+            // });
 
     }
 });

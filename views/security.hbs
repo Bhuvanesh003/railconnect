@@ -9,13 +9,13 @@
 <body>
     <div class="form-container">
     <h1>Enter OTP Send To Mail</h1>
-    <form method="post" autocomplete="off" action="/home"  >
+    <form method="post" autocomplete="off" action="/security"  >
     <div class="input-contanier" >
         <input type="text" maxlength="1" name="otp1" required class="input" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
         <input type="text" maxlength="1" name="otp2" required class="input" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
         <input type="text" maxlength="1" name="otp3" required class="input" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
         <input type="text" maxlength="1" name="otp4" required class="input" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> <br>
-        <br><button class="submit" onclick="return validate()"> Verify OTP</button>
+        <br><button class="submit"> Verify OTP</button>
     </div>
     </form>
     {{#if error}}
@@ -27,41 +27,7 @@
     </div>
     <script>
       const inputs = document.querySelectorAll("input"),button = document.querySelector("button");
-      const otp={{otp}};
-      function validate()
-      {
-        button.classList.remove("active");
-        console.log("dd"+ otp);
-        if(inputs[3].value!=otp%10)
-        {
-          document.getElementById('error').innerHTML="Not a Valid OTP"
-          button.classList.add("active");
-          return false;
-        }
-        otp=otp/10;
-        if(inputs[2].value!=otp%10)
-        {
-          document.getElementById('error').innerHTML="Not a Valid OTP"
-          button.classList.add("active");
-          return false;
-        }
-        otp=otp/10;
-        if(inputs[1].value!=otp%10)
-        {
-          document.getElementById('error').innerHTML="Not a Valid OTP"
-          button.classList.add("active");
-          return false;
-        }
-        otp=otp/10;
-        if(inputs[0].value!=otp%10)
-        {
-          document.getElementById('error').innerHTML="Not a Valid OTP"
-          button.classList.add("active");
-          return false;
-        }
-        return true;
-      }
-// iterate over all inputs
+
 inputs.forEach((input) => {
   input.addEventListener("keyup", (e) => {
     if (inputs[3].value !== "" && inputs[0].value !== "" && inputs[1].value !== "" && inputs[2].value !== "") {
