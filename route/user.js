@@ -12,6 +12,10 @@ router.get('/login',(req,res,next)=>{
     res.status(200).render('login.hbs',{title:"Login"});
 });
 
+router.get('/',(req,res,next)=>{
+    res.status(200).render('login.hbs',{title:"Login"});
+});
+
 router.post('/login',async (req,res,next)=>{
     console.log(req.body);
     let dbs=await db.getdatabase();
